@@ -38,6 +38,7 @@ npm install
 3. Set up API keys:
    - You'll need API keys for the OpenWeatherMap API and Geocoding API. Create accounts and obtain these keys.
    - Create a `.env.local` file in the project root directory and add your API keys like this:
+   - Don't worry it is already set with `.env.local` but you can use you own keys
 
 ```env
 REACT_APP_OPENWEATHERMAP_API_KEY=your_openweathermap_api_key
