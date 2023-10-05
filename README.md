@@ -1,5 +1,3 @@
-
-
 # WeatherSimple
 
 WeatherSimple is a minimalistic weather forecasting web application that provides you with up-to-date weather information for your desired locations. It offers a clean and straightforward interface to quickly check the weather conditions and forecasts.
@@ -52,6 +50,20 @@ npm start
 ```
 
 5. Open your browser and visit `http://localhost:3000` to use WeatherSimple.
+
+6. Screenshots
+
+   Screenshot 1
+
+   <img src="public/weatherSimple.png" alt="Screenshot 1" width="900" height="500">
+
+   Screenshot 2
+
+   <img src="public/weatherSimpleSpain.png" alt="Screenshot 1" width="900" height="500">
+
+   Screenshot 3
+
+   <img src="public/weatherSimpleVan.png" alt="Screenshot 1" width="900" height="500">
 
 ## License
 
