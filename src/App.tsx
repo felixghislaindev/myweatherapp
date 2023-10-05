@@ -24,15 +24,12 @@ function App() {
       const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&cnt=5&appid=${weatherApiKey}`;
       const weatherResponse = await axios.get(weatherUrl);
       const res: WeatherApiResponse = weatherResponse.data;
-      console.log(res);
       const formattedWeatherData = res.list.map((weatherItem) => ({
         date: formatWeatherDate(weatherItem.dt_txt),
         temperature: roundTemperature(weatherItem.main.temp),
         weatherIconUrl: `https://openweathermap.org/img/w/${weatherItem.weather[0].icon}.png`,
       }));
-      console.log(formattedWeatherData);
       setWeatherData(formattedWeatherData);
-
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -49,12 +46,14 @@ function App() {
         <p>Loading...</p>
       ) : (
         <div className="px-4 sm:px-8">
-          <span className="block font-semibold ">3 hour forecast data</span>
-          <div className="flex flex-wrap justify-center space-x-2 mt-4">
+          {weatherData.length > 0 && (
+            <span className="font-semibold">3 hour forecast data</span>
+          )}
+          <div className="flex flex-wrap justify-center mt-4 space-x-2">
             {weatherData.map((weatherItem) => (
               <div
                 key={weatherItem.date}
-                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2"
+                className="w-full p-2 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
               >
                 <WeatherCard
                   date={weatherItem.date}
