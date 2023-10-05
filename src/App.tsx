@@ -1,24 +1,71 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import SearchBar from "./components/SearchBar";
+import WeatherCard from "./components/WeatherCard";
+import CurrentWeather from "./components/CurrentWeather";
+import axios from "axios";
+import { FormattedWeatherData, WeatherApiResponse } from "./types";
+import { format } from "date-fns";
+import { roundTemperature } from "./utils/helpers";
 
 function App() {
+  const [weatherData, setWeatherData] = useState<FormattedWeatherData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const formatWeatherDate = (dt_txt: string) => {
+    const date = new Date(dt_txt);
+    return format(date, "EEEE h:mm a");
+  };
+
+  const handleWeatherSearch = async (cityName: string) => {
+    try {
+      setIsLoading(true);
+      const weatherApiKey = process.env.REACT_APP_OPENWEATHERMAP_API_KEY;
+      const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&cnt=5&appid=${weatherApiKey}`;
+      const weatherResponse = await axios.get(weatherUrl);
+      const res: WeatherApiResponse = weatherResponse.data;
+      console.log(res);
+      const formattedWeatherData = res.list.map((weatherItem) => ({
+        date: formatWeatherDate(weatherItem.dt_txt),
+        temperature: roundTemperature(weatherItem.main.temp),
+        weatherIconUrl: `https://openweathermap.org/img/w/${weatherItem.weather[0].icon}.png`,
+      }));
+      console.log(formattedWeatherData);
+      setWeatherData(formattedWeatherData);
+
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <SearchBar handleWeatherSearch={handleWeatherSearch} />
+      <CurrentWeather />
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="px-4 sm:px-8">
+          <span className="block font-semibold ">3 hour forecast data</span>
+          <div className="flex flex-wrap justify-center space-x-2 mt-4">
+            {weatherData.map((weatherItem) => (
+              <div
+                key={weatherItem.date}
+                className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 p-2"
+              >
+                <WeatherCard
+                  date={weatherItem.date}
+                  temperature={weatherItem.temperature}
+                  weatherIconUrl={weatherItem.weatherIconUrl}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
